@@ -575,11 +575,11 @@ def get_reviews(book_id: int):
                         u.full_name,
                         r.rating,
                         r.review_text,
-                        r.created_at
+                        r.review_date
                     FROM BW_REVIEWS r
                     JOIN BW_USERS u ON u.user_id = r.user_id
                     WHERE r.book_id = :book_id
-                    ORDER BY r.created_at DESC
+                    ORDER BY r.review_date DESC
                 """, {"book_id": book_id})
 
                 rows = cursor.fetchall()
@@ -591,7 +591,7 @@ def get_reviews(book_id: int):
                 "name": row[2],
                 "rating": row[3],
                 "review_text": row[4],
-                "created_at": row[5].isoformat() if row[5] else None,
+                "review_date": row[5].isoformat() if row[5] else None,
             }
             for row in rows
         ]
@@ -621,15 +621,15 @@ def create_review(
 
             cursor.execute("""
                 INSERT INTO BW_REVIEWS
-                    (user_id, book_id, rating, review_text, created_at)
+                    (user_id, book_id, rating, review_text, review_date)
                 VALUES
-                    (:user_id, :book_id, :rating, :review_text, :created_at)
+                    (:user_id, :book_id, :rating, :review_text, :review_date)
             """, {
                 "user_id": user_id,
                 "book_id": data.book_id,
                 "rating": data.rating,
                 "review_text": data.review_text.strip(),
-                "created_at": datetime.now(timezone.utc).replace(tzinfo=None),
+                "review_date": datetime.now(timezone.utc).replace(tzinfo=None),
             })
 
         conn.commit()
