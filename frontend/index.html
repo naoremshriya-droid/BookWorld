@@ -1,0 +1,1196 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BookWorld | Your Next Chapter Awaits</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--burgundy:#762b3e;--dark:#29231f;--cream:#faf7f1;--gold:#d9b778;--muted:#81766e}
+body{font-family:Arial,sans-serif;background:var(--cream);color:var(--dark)}
+body.modal-open{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.announcement{background:var(--burgundy);color:white;text-align:center;padding:11px;font-size:12px;letter-spacing:1px}
+header{background:#fffdf9;padding:20px 6%;display:flex;align-items:center;justify-content:space-between;gap:25px;border-bottom:1px solid #eae2d7}
+.logo{font-family:Georgia,serif;color:var(--burgundy);font-size:31px;font-weight:bold;white-space:nowrap}
+.logo span{color:var(--gold)}
+.search{display:flex;max-width:490px;flex:1;border:1px solid #ded5ca;background:white;border-radius:3px;overflow:hidden}
+.search input{width:100%;padding:13px;border:none;outline:none;background:transparent}
+.search button{background:var(--burgundy);color:white;padding:0 20px;border:none}
+.header-actions{display:flex;gap:20px;align-items:center;font-size:14px;white-space:nowrap}
+.header-actions button{background:none;border:none;color:var(--dark)}
+nav{display:flex;justify-content:center;gap:34px;padding:17px 10px;background:white;border-bottom:1px solid #eee5dc;font-size:13px;flex-wrap:wrap}
+nav a:hover{color:var(--burgundy)}
+.hero{margin:26px auto;width:92%;min-height:370px;border-radius:5px;overflow:hidden;display:flex;align-items:center;background:linear-gradient(90deg,rgba(38,24,22,.94),rgba(38,24,22,.55),rgba(38,24,22,.05)),url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1800&q=85") center/cover;color:white}
+.hero-content{padding:50px 7%;max-width:660px}
+.eyebrow{color:var(--gold);font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:18px}
+.hero h1{font-family:Georgia,serif;font-size:clamp(38px,5vw,65px);font-weight:normal;line-height:1.08;margin-bottom:18px}
+.hero p{color:#f1e6dc;line-height:1.8;max-width:420px;margin-bottom:25px}
+.primary-btn{display:inline-block;background:var(--gold);color:#2c211b;border:none;padding:14px 25px;font-weight:bold;font-size:13px;transition:.2s}
+.primary-btn:hover{background:white;transform:translateY(-2px)}
+.categories{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;width:88%;margin:38px auto 60px}
+.category{padding:25px 12px;text-align:center;background:#eee5d8;border:1px solid #e4d8c9;transition:.2s}
+.category:nth-child(even){background:#f4e8e7}
+.category:hover{transform:translateY(-4px);border-color:var(--burgundy)}
+.category .emoji{font-size:29px;display:block;margin-bottom:12px}
+.category h3{font-family:Georgia,serif;font-size:18px;margin-bottom:6px}
+.category p{font-size:12px;color:var(--muted)}
+.section{width:88%;margin:0 auto 65px}
+.section-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:25px;gap:15px}
+.section-heading .eyebrow{color:var(--burgundy);margin-bottom:8px}
+.section-heading h2{font-family:Georgia,serif;font-weight:normal;font-size:clamp(27px,3vw,36px)}
+.view-all{color:var(--burgundy);font-size:13px;font-weight:bold;white-space:nowrap}
+.book-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.book-card{background:#fffdf9;border:1px solid #eee6dc;padding:14px;position:relative;transition:.25s;min-width:0}
+.book-card:hover{transform:translateY(-5px);box-shadow:0 12px 28px #39251a12}
+.book-cover{height:225px;background:#eee5da;display:flex;justify-content:center;align-items:center;overflow:hidden;margin-bottom:16px}
+.book-cover img{width:100%;height:100%;object-fit:contain;transition:.3s}
+.book-card:hover .book-cover img{transform:scale(1.04)}
+.tag{position:absolute;top:22px;left:22px;background:var(--burgundy);color:white;padding:6px 8px;font-size:10px;letter-spacing:.4px}
+.book-card h3{font-family:Georgia,serif;font-size:17px;line-height:1.4;margin-bottom:6px}
+.book-card h3:hover{color:var(--burgundy)}
+.author{font-size:12px;color:var(--muted);margin-bottom:12px}
+.price{font-weight:bold;color:var(--burgundy);font-size:16px}
+.old-price{text-decoration:line-through;color:#9b928b;font-weight:normal;font-size:12px;margin-left:6px}
+.add-btn{width:100%;padding:11px 5px;background:white;color:var(--burgundy);border:1px solid var(--burgundy);margin-top:14px;font-size:12px;font-weight:bold}
+.add-btn:hover{background:var(--burgundy);color:white}
+.feature-banner{margin:0 auto 65px;width:88%;padding:48px;background:#eae0d2;display:flex;justify-content:space-between;align-items:center;gap:30px}
+.feature-banner h2{font-family:Georgia,serif;font-weight:normal;font-size:clamp(28px,4vw,42px);margin-bottom:12px}
+.feature-banner p{color:#6c5e52;line-height:1.7;max-width:520px}
+.feature-banner .primary-btn{background:var(--burgundy);color:white;white-space:nowrap}
+.newsletter{text-align:center;padding:55px 20px;background:#f0e8de}
+.newsletter h2{font-family:Georgia,serif;font-size:32px;font-weight:normal;margin-bottom:12px}
+.newsletter p{color:var(--muted);margin-bottom:20px}
+.newsletter form{display:flex;max-width:440px;margin:auto}
+.newsletter input{flex:1;min-width:0;padding:13px;border:1px solid #d9cfc2;outline:none}
+.newsletter button{background:var(--burgundy);color:white;border:none;padding:0 20px}
+footer{background:#29231f;color:#f6eee4;padding:45px 7% 20px}
+.footer-content{display:flex;justify-content:space-between;gap:35px;flex-wrap:wrap;margin-bottom:35px}
+.footer-content h3{font-family:Georgia,serif;font-size:23px;margin-bottom:12px}
+.footer-content p,.footer-content a{color:#c9bcb0;font-size:13px;line-height:2}
+.footer-links{display:flex;flex-direction:column}
+.copyright{padding-top:20px;border-top:1px solid #50443c;color:#c9bcb0;font-size:12px;text-align:center}
+.empty-message{grid-column:1/-1;padding:30px;text-align:center;color:var(--muted)}
+
+.feature-overlay{display:none;position:fixed;inset:0;background:rgba(41,35,31,.68);z-index:1000;justify-content:center;align-items:center;padding:20px}
+.feature-overlay.active{display:flex}
+.feature-panel{background:var(--cream);color:var(--dark);width:100%;max-width:650px;max-height:85vh;overflow-y:auto;padding:28px;border:1px solid #e4d8c9;box-shadow:0 15px 50px #0003}
+.feature-panel h2{font-family:Georgia,serif;font-weight:normal;color:var(--burgundy);margin-bottom:20px}
+.feature-close{float:right;background:none;border:none;color:var(--burgundy);font-size:25px}
+.feature-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #e4d8c9}
+.feature-row p{margin:4px 0;color:var(--muted);font-size:13px}
+.feature-panel input,.feature-panel select,.feature-panel textarea{display:block;width:100%;padding:12px;margin:8px 0 15px;border:1px solid #ded5ca;background:white;color:var(--dark);font:inherit}
+.feature-panel textarea{min-height:90px;resize:vertical}
+.feature-panel label{font-size:13px;font-weight:bold}
+.feature-action{background:var(--burgundy);color:white;border:1px solid var(--burgundy);padding:11px 17px;margin-top:10px}
+.feature-action:hover{background:var(--dark)}
+.feature-secondary{background:transparent;color:var(--burgundy);border:1px solid var(--burgundy);padding:8px 12px}
+.feature-total{font-size:19px;font-weight:bold;color:var(--burgundy);margin-top:20px}
+.feature-note{color:var(--muted);font-size:12px;line-height:1.6;margin-top:12px}
+
+.book-details-panel{position:relative;width:min(900px,94vw);max-width:900px;max-height:88vh;overflow-y:auto;padding:32px;background:#fffaf2;color:#3b2527;border:1px solid #d8bd8a;border-radius:16px}
+.book-details-close{position:sticky;float:right;top:0;margin-top:-8px;margin-right:-8px;border:none;background:transparent;color:#702d3b;font-size:32px;z-index:2}
+.book-details-top{display:flex;align-items:flex-start;gap:28px;clear:both}
+.book-details-top>img{width:190px;max-width:35%;height:auto;max-height:290px;object-fit:contain;border-radius:7px;box-shadow:0 8px 20px #3b252720}
+.book-details-info{flex:1;min-width:0}
+.book-details-label{color:#96733e;font-size:11px;letter-spacing:2px;font-weight:700}
+.book-details-info h2{margin:8px 0;color:#702d3b;font-size:28px}
+#detailBookAuthor{font-size:16px;color:#765d56}
+#detailBookGenre,#detailBookRating,#detailBookPrice{margin:10px 0}
+#detailBookRating{color:#a87927;font-weight:700}
+#detailBookDescription{line-height:1.75;white-space:pre-line}
+.book-details-panel hr{border:0;border-top:1px solid #e6d7c1;margin:28px 0}
+.book-reviews-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:20px}
+.book-reviews-heading h3{color:#702d3b;margin:0 0 6px}
+.book-reviews-heading p{margin:0;color:#806f65;font-size:13px}
+.write-review-btn,.cancel-review-btn{padding:11px 16px;border-radius:7px;cursor:pointer;font:inherit}
+.write-review-btn{background:#702d3b;border:1px solid #702d3b;color:#fffaf2}
+.write-review-btn:hover{background:#57212d}
+.cancel-review-btn{background:transparent;color:#702d3b;border:1px solid #cbb69d}
+.book-review-item{padding:17px 0;border-bottom:1px solid #e8dccb}
+.book-review-meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.book-review-name{color:#702d3b;font-weight:700}
+.book-review-stars{color:#b0802d;letter-spacing:2px}
+.book-review-text{margin:9px 0 0;line-height:1.65;overflow-wrap:anywhere}
+.no-book-reviews{padding:18px;border-radius:8px;background:#f5ecdf;color:#806f65}
+.book-review-form{margin-top:24px;padding:22px;background:#f5ecdf;border:1px solid #e2d1b7;border-radius:10px}
+.book-review-form h3{margin-top:0;color:#702d3b}
+.book-review-form label{display:block;margin:14px 0 6px;font-weight:600;font-size:14px}
+.book-review-form input,.book-review-form select,.book-review-form textarea{width:100%;box-sizing:border-box;padding:11px;border:1px solid #d8c6ae;border-radius:6px;background:#fffdf9;color:#3b2527;font:inherit}
+.review-form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+[hidden]{display:none!important}
+
+@media(max-width:850px){header{flex-wrap:wrap}.search{order:3;flex-basis:100%;max-width:none}.book-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.categories{grid-template-columns:repeat(2,1fr)}.feature-banner{padding:30px}}
+@media(max-width:600px){.book-details-panel{padding:20px}.book-details-top{gap:16px}.book-details-top>img{width:120px}.book-details-info h2{font-size:21px}.book-reviews-heading{align-items:flex-start;flex-direction:column}}
+@media(max-width:500px){header{padding:18px 5%}.logo{font-size:25px}.header-actions{gap:10px;font-size:12px}nav{gap:16px}.hero{min-height:400px}.hero-content{padding:30px}.section,.categories,.feature-banner{width:92%}.book-grid{gap:12px}.book-cover{height:175px}.book-card{padding:9px}.feature-banner{flex-direction:column;align-items:start}.section-heading h2{font-size:26px}.feature-panel{padding:20px}.feature-row{align-items:flex-start;flex-wrap:wrap}}
+
+/* Book cover images — keep the burgundy and cream aesthetic */
+.book-cover {
+    height: 225px;
+    background: #f0e8de;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.book-card:hover .book-cover img {
+    transform: scale(1.04);
+}
+
+.book-cover-placeholder {
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    background: #762b3e;
+    color: #faf7f1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    font-family: Georgia, serif;
+    overflow-wrap: anywhere;
+}
+
+.book-cover-placeholder span {
+    color: #d9b778;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.book-cover-placeholder strong {
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+.book-cover-placeholder small {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 500px) {
+    .book-cover {
+        height: 175px;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="announcement">A LITTLE MAGIC IN EVERY BOOK &nbsp; | &nbsp; FREE SHIPPING ON ORDERS ABOVE ₹999</div>
+
+<header>
+<a href="index.html" class="logo">Book<span>World</span>.</a>
+<form class="search" id="searchForm">
+<input type="search" id="searchInput" placeholder="Search books, authors, genres..." aria-label="Search books">
+<button type="submit">Search</button>
+</form>
+<div class="header-actions">
+<a href="login.html" id="accountLink">♙ Account</a>
+<button type="button" onclick="showCart()">♡ Bag (<span id="cartCount">0</span>)</button>
+</div>
+</header>
+
+<nav>
+<a href="#bestsellers">BESTSELLERS</a>
+<a href="#fiction">FICTION</a>
+<a href="#selfhelp">SELF-HELP</a>
+<a href="#manga">MANGA</a>
+<a href="#children">CHILDREN</a>
+<a href="#newarrivals">NEW ARRIVALS</a>
+</nav>
+
+<main>
+<section class="hero">
+<div class="hero-content">
+<p class="eyebrow">For the love of reading</p>
+<h1>Every book opens a new world.</h1>
+<p>From page-turning thrillers to stories that stay with you forever, find your next favourite read right here.</p>
+<a class="primary-btn" href="#bestsellers">EXPLORE THE COLLECTION →</a>
+</div>
+</section>
+
+<section class="categories" id="fiction">
+<a class="category" href="#bestsellers" onclick="chooseCategory('fiction')"><span class="emoji">📖</span><h3>Fiction</h3><p>Lose yourself in a story</p></a>
+<a class="category" href="#bestsellers" onclick="chooseCategory('self-help')"><span class="emoji">🌱</span><h3>Self-growth</h3><p>Become your best self</p></a>
+<a class="category" href="#manga" onclick="chooseCategory('manga')"><span class="emoji">🎌</span><h3>Manga</h3><p>Worlds beyond imagination</p></a>
+<a class="category" href="#children" onclick="chooseCategory('children')"><span class="emoji">🧸</span><h3>For little readers</h3><p>Big adventures for small minds</p></a>
+</section>
+
+<section class="section" id="bestsellers">
+<div class="section-heading"><div><p class="eyebrow">Readers' favourites</p><h2>Bestsellers</h2></div><a href="#bestsellers" class="view-all" onclick="showAll()">VIEW ALL ↗</a></div>
+<div class="book-grid" id="bookGrid"></div>
+</section>
+
+<section class="feature-banner" id="children">
+<div><p class="eyebrow">A gift that lasts forever</p><h2>Little readers, big imaginations.</h2><p>Discover magical adventures, colourful picture books and stories that make bedtime the best time.</p></div>
+<a class="primary-btn" href="#bestsellers" onclick="chooseCategory('children')">DISCOVER CHILDREN'S BOOKS</a>
+</section>
+
+<section class="section" id="newarrivals">
+<div class="section-heading"><div><p class="eyebrow">Fresh off the shelf</p><h2>New & Noteworthy</h2></div><a href="#newarrivals" class="view-all" onclick="chooseCategory('new')">EXPLORE ↗</a></div>
+<div class="book-grid" id="newGrid"></div>
+</section>
+
+<section class="section" id="selfhelp">
+<div class="section-heading"><div><p class="eyebrow">Small steps, big changes</p><h2>Books for a better you</h2></div><a href="#bestsellers" class="view-all" onclick="chooseCategory('self-help')">EXPLORE ↗</a></div>
+<div class="book-grid" id="selfHelpGrid"></div>
+</section>
+
+<section class="section" id="manga">
+<div class="section-heading"><div><p class="eyebrow">Your next obsession</p><h2>Manga Mania</h2></div><a href="#bestsellers" class="view-all" onclick="chooseCategory('manga')">EXPLORE ↗</a></div>
+<div class="book-grid" id="mangaGrid"></div>
+</section>
+
+<section class="newsletter">
+<p class="eyebrow">A note for book lovers</p><h2>Letters from the reading desk.</h2>
+<p>Get book recommendations, reading lists and literary discoveries.</p>
+<form id="newsletterForm"><input type="email" placeholder="Your email address" required><button type="submit">SIGN ME UP</button></form>
+</section>
+</main>
+
+<footer>
+<div class="footer-content">
+<div><h3 class="logo" style="color:#fffdf9">Book<span>World</span>.</h3><p>Your next chapter begins here.</p><p>Made for readers, dreamers and collectors.</p></div>
+<div class="footer-links"><strong>EXPLORE</strong><a href="#bestsellers">Bestsellers</a><a href="#fiction">Fiction</a><a href="#selfhelp">Self-growth</a><a href="#manga">Manga</a><a href="#bestsellers" onclick="showAll()">Browse books & write a review</a></div>
+<div class="footer-links"><strong>HELP & SUPPORT</strong><a href="login.html">My Account</a><a href="#newsletterForm">Contact</a><a href="#newsletterForm">Join our newsletter</a><a href="#catalog" onclick="openCatalog();return false;">Manage Book Catalog</a></div>
+</div>
+<div class="copyright">© 2026 BookWorld. Made with ♥ for book lovers.</div>
+</footer>
+
+<!-- CART -->
+<div class="feature-overlay" id="cartOverlay" onclick="if(event.target===this)closePanel('cartOverlay')">
+<section class="feature-panel">
+<button class="feature-close" onclick="closePanel('cartOverlay')" aria-label="Close cart">&times;</button>
+<h2>Your BookWorld Bag</h2><div id="cartItems"></div>
+<p class="feature-total">Total: <span id="cartTotal">₹0</span></p>
+<button class="feature-action" onclick="openCheckout()">PROCEED TO CHECKOUT →</button>
+<p class="feature-note">Demo checkout only. No real payment will be charged.</p>
+</section>
+</div>
+
+<!-- CHECKOUT -->
+<div class="feature-overlay" id="checkoutOverlay" onclick="if(event.target===this)closePanel('checkoutOverlay')">
+<section class="feature-panel">
+<button class="feature-close" onclick="closePanel('checkoutOverlay')" aria-label="Close checkout">&times;</button>
+<h2>Complete Your Order</h2>
+<form id="checkoutForm">
+<label for="customerName">Full name</label><input id="customerName" required>
+<label for="customerEmail">Email address</label><input id="customerEmail" type="email" required>
+<label for="customerAddress">Delivery address</label><textarea id="customerAddress" required></textarea>
+<label for="paymentMethod">Payment method</label>
+<select id="paymentMethod" required><option value="UPI">UPI</option><option value="Card">Credit / Debit Card</option><option value="COD">Cash on Delivery</option></select>
+<p class="feature-total">Order total: <span id="checkoutTotal">₹0</span></p>
+<button class="feature-action" type="submit">PLACE ORDER</button>
+</form>
+<p class="feature-note">Prototype only. This does not collect card details or process real payments.</p>
+</section>
+</div>
+
+<!-- MANAGE CATALOG -->
+<div class="feature-overlay" id="catalogOverlay" onclick="if(event.target===this)closePanel('catalogOverlay')">
+<section class="feature-panel">
+<button class="feature-close" onclick="closePanel('catalogOverlay')" aria-label="Close catalog">&times;</button>
+<h2>Manage Book Catalog</h2>
+<form id="addBookForm">
+<label for="newTitle">Book title</label><input id="newTitle" required>
+<label for="newAuthor">Author</label><input id="newAuthor" required>
+<label for="newPrice">Price (₹)</label><input id="newPrice" type="number" min="1" required>
+<label for="newOldPrice">Original price (₹)</label><input id="newOldPrice" type="number" min="1" required>
+<label for="newCategory">Category</label>
+<select id="newCategory" required><option value="fiction">Fiction</option><option value="self-help">Self-help</option><option value="manga">Manga</option><option value="children">Children</option></select>
+<label for="newImage">Book cover image URL (optional)</label><input id="newImage" type="url" placeholder="https://example.com/book-cover.jpg">
+<label for="newDescription">Book description (optional)</label><textarea id="newDescription" maxlength="2000"></textarea>
+<button class="feature-action" type="submit">ADD BOOK</button>
+</form>
+</section>
+</div>
+
+<!-- BOOK DETAILS + BOOK-SPECIFIC REVIEWS -->
+<div class="feature-overlay" id="bookDetailsOverlay" onclick="if(event.target===this)closeBookDetails()">
+<section class="feature-panel book-details-panel">
+<button class="book-details-close" onclick="closeBookDetails()" aria-label="Close book details">&times;</button>
+<div class="book-details-top">
+<img id="detailBookImage" src="" alt="Book cover">
+<div class="book-details-info">
+<p class="book-details-label">BOOKWORLD • BOOK DETAILS</p>
+<h2 id="detailBookTitle"></h2><p id="detailBookAuthor"></p>
+<p id="detailBookGenre"></p><p id="detailBookRating"></p><p id="detailBookPrice"></p>
+<p id="detailBookDescription"></p>
+</div>
+</div>
+<hr>
+<div class="book-reviews-heading">
+<div><h3>Reader Reviews</h3><p>Reviews submitted by BookWorld readers on this browser.</p></div>
+<button class="write-review-btn" onclick="openReviewForm()">✎ Write a Review</button>
+</div>
+<div id="bookReviewsList"></div>
+<form id="bookReviewForm" class="book-review-form" hidden>
+<h3>Share your thoughts</h3>
+<label for="bookReviewerName">Your name</label>
+<input id="bookReviewerName" type="text" placeholder="Enter your name" maxlength="60" required>
+<label for="bookReviewRating">Your rating</label>
+<select id="bookReviewRating" required>
+<option value="5">★★★★★ — Loved it</option><option value="4">★★★★☆ — Really good</option>
+<option value="3">★★★☆☆ — It was okay</option><option value="2">★★☆☆☆ — Not for me</option>
+<option value="1">★☆☆☆☆ — Disliked it</option>
+</select>
+<label for="bookReviewText">Your review</label>
+<textarea id="bookReviewText" rows="4" maxlength="2000" placeholder="What did you think of this book?" minlength="5" required></textarea>
+<div class="review-form-actions">
+<button type="button" class="cancel-review-btn" onclick="closeReviewForm()">Cancel</button>
+<button type="submit" class="write-review-btn">Post Review</button>
+</div>
+</form>
+<p class="feature-note">Reviews are saved locally in this browser for now. They will not be shared across devices until a backend such as Firebase is connected.</p>
+</section>
+</div>
+
+
+<script>
+const API_BASE = "http://127.0.0.1:8000";
+
+let books = [];
+let categories = [];
+let cart = [];
+let activeCategory = "";
+let currentBook = null;
+
+const $ = id => document.getElementById(id);
+
+const token = () => localStorage.getItem("bookworld_token") || "";
+
+const savedUser = () => {
+    try {
+        return JSON.parse(localStorage.getItem("bookworld_user") || "null");
+    } catch {
+        return null;
+    }
+};
+
+const money = value =>
+    "₹" + Number(value || 0).toLocaleString("en-IN", {
+        maximumFractionDigits: 2
+    });
+
+function safe(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[c]));
+}
+
+/* ---------- SMALL UI HELPERS ---------- */
+
+function showToast(message) {
+    let toast = $("toast");
+
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "toast";
+        Object.assign(toast.style, {
+            position: "fixed",
+            bottom: "22px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "#29231f",
+            color: "#faf7f1",
+            padding: "13px 20px",
+            borderRadius: "4px",
+            zIndex: "3000",
+            maxWidth: "90%",
+            textAlign: "center",
+            boxShadow: "0 5px 20px #0003"
+        });
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+    toast.style.display = "block";
+
+    clearTimeout(window.bookWorldToastTimer);
+    window.bookWorldToastTimer = setTimeout(() => {
+        toast.style.display = "none";
+    }, 3000);
+}
+
+async function api(path, options = {}) {
+    const headers = {
+        ...(options.headers || {})
+    };
+
+    if (options.body && !headers["Content-Type"]) {
+        headers["Content-Type"] = "application/json";
+    }
+
+    if (token()) {
+        headers.Authorization = "Bearer " + token();
+    }
+
+    const response = await fetch(API_BASE + path, {
+        ...options,
+        headers
+    });
+
+    const raw = await response.text();
+    let result = {};
+
+    try {
+        result = raw ? JSON.parse(raw) : {};
+    } catch {
+        result = { detail: raw };
+    }
+
+    if (!response.ok) {
+        const detail = result.detail;
+        const message = Array.isArray(detail)
+            ? detail.map(item => item.msg || "Invalid input").join(", ")
+            : detail;
+
+        throw new Error(message || `Request failed (${response.status})`);
+    }
+
+    return result;
+}
+
+/* Use the overlay class already present in your burgundy-cream HTML. */
+
+function openPanel(id) {
+    const panel = $(id);
+    if (!panel) return;
+
+    panel.classList.add("active");
+    document.body.classList.add("modal-open");
+}
+
+function closePanel(id) {
+    const panel = $(id);
+    if (!panel) return;
+
+    panel.classList.remove("active");
+
+    if (!document.querySelector(".feature-overlay.active")) {
+        document.body.classList.remove("modal-open");
+    }
+}
+
+/* Close an overlay when its background is clicked. */
+document.querySelectorAll(".feature-overlay").forEach(overlay => {
+    overlay.addEventListener("click", event => {
+        if (event.target === overlay) {
+            if (overlay.id === "bookDetailsOverlay") {
+                closeBookDetails();
+            } else {
+                closePanel(overlay.id);
+            }
+        }
+    });
+});
+
+/* ---------- CATALOGUE ---------- */
+
+function categoryName(book) {
+    return (book.category || "Uncategorised").trim();
+}
+
+function categorySlug(name) {
+    return String(name || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+}
+
+function ensureCatalogStatus() {
+    let status = $("catalogStatus");
+
+    if (!status) {
+        status = document.createElement("p");
+        status.id = "catalogStatus";
+        status.style.cssText =
+            "width:88%;margin:0 auto 20px;color:#81766e;font-size:13px;";
+        $("bestsellers").insertBefore(status, $("bookGrid"));
+    }
+
+    return status;
+}
+
+function ensureEmptyMessage(id, grid) {
+    let message = $(id);
+
+    if (!message) {
+        message = document.createElement("p");
+        message.id = id;
+        message.className = "empty-message";
+        message.style.display = "none";
+        grid.after(message);
+    }
+
+    return message;
+}
+
+
+function bookCard(book, index) {
+    const bookId = Number(book.book_id);
+    const stock = Number(book.stock || 0);
+
+    // Use a saved image URL or ISBN when available.
+    const coverUrl = book.image_url
+        ? book.image_url
+        : book.isbn
+            ? `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(book.isbn)}-M.jpg?default=false`
+            : "";
+
+    const cover = coverUrl
+        ? `<img
+                src="${safe(coverUrl)}"
+                alt="${safe(book.title)} book cover"
+                loading="lazy"
+                onerror="this.onerror=null;this.parentElement.innerHTML='<div class=&quot;book-cover-placeholder&quot;>BookWorld</div>'"
+           >`
+        : `<div class="book-cover-placeholder">
+                <span>BOOKWORLD</span>
+                <strong>${safe(book.title)}</strong>
+                <small>${safe(categoryName(book))}</small>
+           </div>`;
+
+    return `
+        <article class="book-card" data-book-id="${bookId}">
+            <div class="book-cover">
+                ${cover}
+            </div>
+
+            <h3>
+                <a href="#book-${bookId}"
+                   onclick="openBookDetails(${bookId}); return false;">
+                    ${safe(book.title)}
+                </a>
+            </h3>
+
+            <p class="author">
+                By ${safe(book.author || "Author not listed")}
+            </p>
+
+            <p class="author">${safe(categoryName(book))}</p>
+
+            <p class="price">${money(book.price)}</p>
+
+            <button
+                class="add-btn"
+                type="button"
+                onclick="addToCart(${bookId})"
+                ${stock <= 0 ? "disabled" : ""}>
+                ${stock <= 0 ? "Out of stock" : "ADD TO BAG"}
+            </button>
+        </article>
+    `;
+}
+
+
+function renderBooks(list = books) {
+    const bestGrid = $("bookGrid");
+    const newGrid = $("newGrid");
+    const selfGrid = $("selfHelpGrid");
+    const mangaGrid = $("mangaGrid");
+
+    const bestEmpty = ensureEmptyMessage("noBestsellers", bestGrid);
+    const newEmpty = ensureEmptyMessage("noNewArrivals", newGrid);
+
+    bestGrid.innerHTML = "";
+    newGrid.innerHTML = "";
+
+    if (selfGrid) selfGrid.innerHTML = "";
+    if (mangaGrid) mangaGrid.innerHTML = "";
+
+    const filtered = list;
+
+    if (!filtered.length) {
+        bestEmpty.textContent = "No books found. Try another search.";
+        bestEmpty.style.display = "block";
+        newEmpty.style.display = "none";
+        return;
+    }
+
+    bestEmpty.style.display = "none";
+    newEmpty.style.display = "none";
+
+    const selfHelpBooks = [];
+    const mangaBooks = [];
+
+    filtered.forEach((book, index) => {
+        const html = bookCard(book, index);
+        const category = categorySlug(categoryName(book));
+
+        if (category.includes("self-help") || category.includes("self-growth")) {
+            selfHelpBooks.push(html);
+        }
+
+        if (category.includes("manga")) {
+            mangaBooks.push(html);
+        }
+
+        if (index < Math.ceil(filtered.length / 2)) {
+            bestGrid.insertAdjacentHTML("beforeend", html);
+        } else {
+            newGrid.insertAdjacentHTML("beforeend", html);
+        }
+    });
+
+    if (selfGrid) {
+        selfGrid.innerHTML = selfHelpBooks.length
+            ? selfHelpBooks.join("")
+            : '<p class="empty-message">Explore our catalogue for self-growth books.</p>';
+    }
+
+    if (mangaGrid) {
+        mangaGrid.innerHTML = mangaBooks.length
+            ? mangaBooks.join("")
+            : '<p class="empty-message">Explore our catalogue for manga.</p>';
+    }
+}
+
+function applyFilters() {
+    const query = ($("searchInput")?.value || "").toLowerCase().trim();
+
+    const filtered = books.filter(book => {
+        const searchable =
+            `${book.title} ${book.author || ""} ${book.category || ""}`
+                .toLowerCase();
+
+        const matchesQuery = searchable.includes(query);
+
+        const matchesCategory =
+            !activeCategory ||
+            categorySlug(categoryName(book)) === activeCategory ||
+            categorySlug(categoryName(book)).includes(activeCategory);
+
+        return matchesQuery && matchesCategory;
+    });
+
+    renderBooks(filtered);
+}
+
+function showAll() {
+    activeCategory = "";
+    if ($("searchInput")) $("searchInput").value = "";
+    renderBooks(books);
+}
+
+function chooseCategory(category) {
+    activeCategory = categorySlug(category);
+    if ($("searchInput")) $("searchInput").value = "";
+    applyFilters();
+}
+
+async function loadBooks() {
+    ensureCatalogStatus().textContent = "Connecting to the BookWorld catalogue…";
+
+    try {
+        const result = await api("/api/books");
+        books = Array.isArray(result) ? result : [];
+
+        try {
+            categories = await api("/api/categories");
+            if (!Array.isArray(categories)) categories = [];
+        } catch {
+            categories = [];
+        }
+
+        ensureCatalogStatus().textContent =
+            `Showing ${books.length} book(s) from your Oracle database.`;
+
+        renderBooks();
+        renderCategories();
+    } catch (error) {
+        ensureCatalogStatus().textContent =
+            "Could not load the catalogue. Check that FastAPI and Oracle are running.";
+
+        $("bookGrid").innerHTML = "";
+        $("newGrid").innerHTML = "";
+
+        showToast("Catalogue connection failed: " + error.message);
+    }
+}
+
+function renderCategories() {
+    /*
+       Your original HTML already has category tiles.
+       Keep those tiles and their onclick="chooseCategory(...)" handlers.
+       This function deliberately does not replace their styling.
+    */
+}
+
+/* ---------- SEARCH ---------- */
+
+$("searchForm").addEventListener("submit", event => {
+    event.preventDefault();
+    activeCategory = "";
+    applyFilters();
+    $("bestsellers").scrollIntoView({ behavior: "smooth" });
+});
+
+$("searchInput").addEventListener("input", () => {
+    activeCategory = "";
+    applyFilters();
+});
+
+/* ---------- CART ---------- */
+
+function updateCart() {
+    $("cartCount").textContent =
+        cart.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+function addToCart(bookId) {
+    const book = books.find(item => Number(item.book_id) === Number(bookId));
+
+    if (!book) {
+        showToast("This book is not in the current catalogue.");
+        return;
+    }
+
+    if (Number(book.stock) <= 0) {
+        showToast("This book is out of stock.");
+        return;
+    }
+
+    let item = cart.find(entry => entry.book_id === Number(bookId));
+
+    if (item) {
+        if (item.quantity >= Number(book.stock)) {
+            showToast("You have reached the available stock.");
+            return;
+        }
+        item.quantity++;
+    } else {
+        cart.push({
+            book_id: Number(book.book_id),
+            title: book.title,
+            author: book.author,
+            price: Number(book.price),
+            stock: Number(book.stock),
+            quantity: 1
+        });
+    }
+
+    updateCart();
+    renderCart();
+    showToast(book.title + " added to your bag.");
+}
+
+function showCart() {
+    renderCart();
+    openPanel("cartOverlay");
+}
+
+function renderCart() {
+    const list = $("cartItems");
+
+    if (!cart.length) {
+        list.innerHTML = '<p class="feature-note">Your bag is empty. Find a book you love!</p>';
+    } else {
+        list.innerHTML = cart.map((item, index) => `
+            <div class="feature-row">
+                <div>
+                    <strong>${safe(item.title)}</strong>
+                    <p>${money(item.price)} each</p>
+                </div>
+
+                <div>
+                    <button class="feature-secondary"
+                            onclick="changeQty(${index},-1)"
+                            type="button">−</button>
+                    <span style="padding:0 10px">${item.quantity}</span>
+                    <button class="feature-secondary"
+                            onclick="changeQty(${index},1)"
+                            type="button">+</button>
+                </div>
+
+                <strong>${money(item.price * item.quantity)}</strong>
+            </div>
+        `).join("");
+    }
+
+    const total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity, 0
+    );
+
+    $("cartTotal").textContent = money(total);
+    $("checkoutTotal").textContent = money(total);
+}
+
+function changeQty(index, delta) {
+    const item = cart[index];
+    if (!item) return;
+
+    const next = item.quantity + delta;
+
+    if (next > item.stock) {
+        showToast("Only " + item.stock + " copy/copies are available.");
+        return;
+    }
+
+    if (next <= 0) {
+        cart.splice(index, 1);
+    } else {
+        item.quantity = next;
+    }
+
+    updateCart();
+    renderCart();
+}
+
+function openCheckout() {
+    if (!cart.length) {
+        showToast("Add a book before checkout.");
+        return;
+    }
+
+    if (!token()) {
+        showToast("Please log in before placing an order.");
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 800);
+        return;
+    }
+
+    const user = savedUser();
+
+    $("customerName").value = user?.full_name || "";
+    $("customerEmail").value = user?.email || "";
+    $("customerAddress").value = user?.address || "";
+
+    renderCart();
+    closePanel("cartOverlay");
+    openPanel("checkoutOverlay");
+}
+
+/* ---------- CHECKOUT / ORACLE ORDER ---------- */
+
+$("checkoutForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (!token()) {
+        showToast("Please log in first.");
+        return;
+    }
+
+    if (!cart.length) {
+        showToast("Your bag is empty.");
+        return;
+    }
+
+    const submitButton = event.submitter;
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "Placing order…";
+    }
+
+    try {
+        const methodValue = $("paymentMethod").value.toUpperCase();
+        const paymentMethod = methodValue === "CARD" ? "CARD"
+            : methodValue === "COD" ? "COD" : "UPI";
+
+        const order = await api("/api/orders", {
+            method: "POST",
+            body: JSON.stringify({
+                items: cart.map(item => ({
+                    book_id: item.book_id,
+                    quantity: item.quantity
+                })),
+                payment_method: paymentMethod,
+                address: $("customerAddress").value.trim()
+            })
+        });
+
+        showToast("Order placed successfully! Order ID: " + order.order_id);
+
+        cart = [];
+        updateCart();
+        renderCart();
+
+        $("checkoutForm").reset();
+        closePanel("checkoutOverlay");
+
+        await loadBooks();
+        await loadMyOrders();
+
+    } catch (error) {
+        showToast("Order failed: " + error.message);
+    } finally {
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = "PLACE ORDER";
+        }
+    }
+});
+
+/* ---------- MY ORDERS ---------- */
+
+function ensureOrderHistory() {
+    let section = $("account-orders");
+
+    if (!section) {
+        section = document.createElement("section");
+        section.id = "account-orders";
+        section.className = "section";
+        section.innerHTML = `
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Your BookWorld account</p>
+                    <h2>My Orders</h2>
+                </div>
+            </div>
+            <div id="orderHistory" class="feature-note">
+                Sign in to view your orders.
+            </div>
+            <button id="loadOrdersBtn" class="feature-action" type="button">
+                Load my orders
+            </button>
+        `;
+        document.querySelector("main").appendChild(section);
+
+        $("loadOrdersBtn").addEventListener("click", loadMyOrders);
+    }
+
+    return section;
+}
+
+async function loadMyOrders() {
+    ensureOrderHistory();
+
+    const target = $("orderHistory");
+
+    if (!token()) {
+        target.textContent = "Please log in to view your orders.";
+        return;
+    }
+
+    target.textContent = "Loading your orders…";
+
+    try {
+        const result = await api("/api/orders");
+
+        if (!Array.isArray(result) || result.length === 0) {
+            target.textContent = "You have not placed any orders yet.";
+            return;
+        }
+
+        target.innerHTML = result.map(order => `
+            <div class="feature-row">
+                <div>
+                    <strong>Order #${safe(order.order_id)}</strong>
+                    <p>${safe(order.order_date || "")}</p>
+                </div>
+                <div>
+                    <p>${safe(order.status || "Processing")}</p>
+                    <strong>${money(order.total)}</strong>
+                </div>
+            </div>
+        `).join("");
+    } catch (error) {
+        target.textContent = "Could not load orders: " + error.message;
+    }
+}
+
+/* ---------- BOOK DETAILS + REVIEWS ---------- */
+
+function closeBookDetails() {
+    closePanel("bookDetailsOverlay");
+    currentBook = null;
+    closeReviewForm();
+}
+
+async function openBookDetails(bookId) {
+    const book = books.find(item => Number(item.book_id) === Number(bookId));
+
+    if (!book) {
+        showToast("Book details are not available.");
+        return;
+    }
+
+    currentBook = book;
+
+    $("detailBookTitle").textContent = book.title || "";
+    $("detailBookAuthor").textContent = "By " + (book.author || "Author not listed");
+    $("detailBookGenre").textContent = "Category: " + categoryName(book);
+    $("detailBookPrice").textContent = "Price: " + money(book.price);
+    $("detailBookRating").textContent = "";
+    $("detailBookDescription").textContent =
+        "Book details are provided by the current catalogue.";
+
+    const image = $("detailBookImage");
+    image.src = book.image_url || "";
+    image.alt = (book.title || "Book") + " cover";
+    image.style.display = book.image_url ? "block" : "none";
+
+    $("bookReviewsList").textContent = "Loading reviews…";
+    $("bookReviewForm").hidden = true;
+
+    openPanel("bookDetailsOverlay");
+
+    try {
+        const reviews = await api(`/api/books/${Number(book.book_id)}/reviews`);
+
+        if (!Array.isArray(reviews) || reviews.length === 0) {
+            $("bookReviewsList").innerHTML =
+                '<p class="no-book-reviews">No reviews yet. Be the first to share your thoughts.</p>';
+            return;
+        }
+
+        $("bookReviewsList").innerHTML = reviews.map(review => `
+            <article class="book-review-item">
+                <div class="book-review-meta">
+                    <span class="book-review-name">${safe(review.name || "Reader")}</span>
+                    <span class="book-review-stars">
+                        ${"★".repeat(Number(review.rating) || 0)}
+                        ${"☆".repeat(5 - (Number(review.rating) || 0))}
+                    </span>
+                </div>
+                <p class="book-review-text">${safe(review.review_text || "")}</p>
+            </article>
+        `).join("");
+    } catch (error) {
+        $("bookReviewsList").textContent =
+            "Could not load reviews: " + error.message;
+    }
+}
+
+function openReviewForm() {
+    if (!currentBook) return;
+
+    if (!token()) {
+        showToast("Please log in to publish a review.");
+        setTimeout(() => window.location.href = "login.html", 800);
+        return;
+    }
+
+    const user = savedUser();
+    $("bookReviewerName").value = user?.full_name || "";
+    $("bookReviewForm").hidden = false;
+}
+
+function closeReviewForm() {
+    if ($("bookReviewForm")) {
+        $("bookReviewForm").hidden = true;
+        $("bookReviewForm").reset();
+    }
+}
+
+$("bookReviewForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (!currentBook) return;
+
+    if (!token()) {
+        showToast("Please log in to publish a review.");
+        return;
+    }
+
+    const button = event.submitter;
+    if (button) {
+        button.disabled = true;
+        button.textContent = "Posting…";
+    }
+
+    try {
+        await api("/api/reviews", {
+            method: "POST",
+            body: JSON.stringify({
+                book_id: Number(currentBook.book_id),
+                rating: Number($("bookReviewRating").value),
+                review_text: $("bookReviewText").value.trim()
+            })
+        });
+
+        showToast("Your review was saved to Oracle.");
+        closeReviewForm();
+        await openBookDetails(currentBook.book_id);
+    } catch (error) {
+        showToast("Review was not saved: " + error.message);
+    } finally {
+        if (button) {
+            button.disabled = false;
+            button.textContent = "Post Review";
+        }
+    }
+});
+
+/* ---------- ACCOUNT ---------- */
+
+function updateAccountLink() {
+    const link = $("accountLink");
+    const user = savedUser();
+
+    if (!link) return;
+
+    if (!user) {
+        link.textContent = "♙ Account";
+        link.href = "login.html";
+        link.onclick = null;
+        return;
+    }
+
+    link.textContent = "♙ " + (user.full_name || "My Account");
+    link.href = "#account-orders";
+
+    link.onclick = event => {
+        event.preventDefault();
+
+        ensureOrderHistory();
+        $("account-orders").scrollIntoView({ behavior: "smooth" });
+        loadMyOrders();
+    };
+}
+
+/* ---------- CATALOG MANAGEMENT ---------- */
+/*
+  The current backend does not implement POST /api/books.
+  Do not show a fake success message or pretend that a book was saved.
+*/
+$("addBookForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    showToast(
+        "Adding books is not connected yet. The backend needs a POST /api/books endpoint."
+    );
+});
+
+/* ---------- NEWSLETTER ---------- */
+
+$("newsletterForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    showToast(
+        "Newsletter signup is not connected yet. No subscription was saved."
+    );
+});
+
+/* ---------- STARTUP ---------- */
+
+updateAccountLink();
+updateCart();
+renderCart();
+loadBooks();
+</script>
+
+</body>
+</html>

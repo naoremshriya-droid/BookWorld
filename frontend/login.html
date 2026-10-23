@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookWorld | Login</title>
+
+    <style>
+        :root {
+            --burgundy: #762b3e;
+            --dark: #29231f;
+            --cream: #faf7f1;
+            --gold: #d9b778;
+            --muted: #81766e;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--cream);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Announcement bar */
+        .announcement {
+            background-color: var(--burgundy);
+            color: var(--white);
+            text-align: center;
+            padding: 10px 15px;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--white);
+            padding: 22px 7%;
+            border-bottom: 1px solid #eee5dc;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-family: Georgia, serif;
+            font-size: 30px;
+            font-weight: bold;
+            color: var(--burgundy);
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: var(--gold);
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--dark);
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--burgundy);
+        }
+
+        /* Main login section */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 55px 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            background-color: var(--white);
+            padding: 42px;
+            border-radius: 10px;
+            border: 1px solid #eee5dc;
+            box-shadow: 0 12px 35px rgba(41, 35, 31, 0.07);
+        }
+
+        .eyebrow {
+            color: var(--burgundy);
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            font-family: Georgia, serif;
+            font-size: 34px;
+            font-weight: normal;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: var(--dark);
+            background-color: #fffdfa;
+            border: 1px solid #ded5cc;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--burgundy);
+            box-shadow: 0 0 0 3px rgba(118, 43, 62, 0.09);
+        }
+
+        input::placeholder {
+            color: #b0a59c;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 6px;
+            background-color: var(--burgundy);
+            color: var(--white);
+            border: 1px solid var(--burgundy);
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .login-button:hover {
+            background-color: #5c2030;
+        }
+
+        .register-text {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 22px;
+            border-top: 1px solid #eee5dc;
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .register-text a {
+            color: var(--burgundy);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .register-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            padding: 22px 15px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            border-top: 1px solid #eee5dc;
+            background-color: var(--white);
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 18px 6%;
+            }
+
+            .logo {
+                font-size: 25px;
+            }
+
+            .login-container {
+                padding: 30px 23px;
+            }
+
+            h1 {
+                font-size: 29px;
+            }
+
+            main {
+                padding: 35px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="announcement">
+        YOUR NEXT FAVOURITE BOOK IS WAITING FOR YOU
+    </div>
+
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                Book<span>World.</span>
+            </a>
+
+            <a href="index.html" class="back-link">
+                ← Back to Home
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <section class="login-container">
+
+            <p class="eyebrow">Welcome Back</p>
+
+            <h1>Every great story starts here.</h1>
+
+            <p class="subtitle">
+                Sign in to continue exploring books, discovering new
+                favourites, and making your next great read yours.
+            </p>
+
+            
+<form id="loginForm">
+
+    <div class="form-group">
+        <label for="username">Email</label>
+        <input
+            type="email"
+            id="username"
+            name="email"
+            placeholder="Enter your registered email"
+            autocomplete="email"
+            required
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+        >
+    </div>
+
+    <p id="loginMessage" role="alert"
+       style="font-size:13px; margin-bottom:12px;"></p>
+
+    <button type="submit" class="login-button">
+        Sign In →
+    </button>
+
+</form>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("loginMessage");
+    const button = this.querySelector("button");
+
+    message.textContent = "";
+    button.disabled = true;
+    button.textContent = "Signing in...";
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email, password })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                typeof result.detail === "string"
+                    ? result.detail
+                    : "Login failed. Please check your details."
+            );
+        }
+
+        localStorage.setItem("bookworld_user", JSON.stringify(result.user));
+        localStorage.setItem("bookworld_token", result.access_token);
+
+        window.location.href = "index.html";
+
+    } catch (error) {
+        message.style.color = "#b42318";
+        message.textContent = error.message === "Failed to fetch"
+            ? "Cannot connect to BookWorld. Please check that the backend is running."
+            : error.message;
+    } finally {
+        button.disabled = false;
+        button.textContent = "Sign In →";
+    }
+});
+</script>
+
+
+            <div class="register-text">
+                New to BookWorld?
+                <a href="register.html">Create an account</a>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        © 2026 BookWorld. A little world of stories, just for you.
+    </footer>
+
+</body>
+</html>

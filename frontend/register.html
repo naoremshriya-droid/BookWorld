@@ -1,0 +1,478 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BookWorld | Create Account</title>
+
+    <style>
+        :root {
+            --burgundy: #762b3e;
+            --dark: #29231f;
+            --cream: #faf7f1;
+            --gold: #d9b778;
+            --muted: #81766e;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .announcement {
+            background: var(--burgundy);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        header {
+            background: white;
+            padding: 20px 7%;
+            border-bottom: 1px solid #eee5dc;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-family: Georgia, serif;
+            font-size: 30px;
+            font-weight: bold;
+            color: var(--burgundy);
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: var(--gold);
+        }
+
+        .back-link {
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            color: var(--burgundy);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 18px;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 470px;
+            background: white;
+            padding: 38px;
+            border: 1px solid #eee5dc;
+            border-radius: 10px;
+            box-shadow: 0 12px 35px rgba(41, 35, 31, 0.07);
+        }
+
+        .eyebrow {
+            color: var(--burgundy);
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-family: Georgia, serif;
+            font-size: 33px;
+            font-weight: normal;
+            line-height: 1.25;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 13px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            border: 1px solid #ded5cc;
+            border-radius: 5px;
+            background: #fffdfa;
+            outline: none;
+            color: var(--dark);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--burgundy);
+            box-shadow: 0 0 0 3px rgba(118, 43, 62, 0.09);
+        }
+
+        input::placeholder {
+            color: #b0a59c;
+        }
+
+        .primary-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 5px;
+            background: var(--burgundy);
+            color: white;
+            border: 1px solid var(--burgundy);
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .primary-button:hover {
+            background: #5c2030;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin: 22px 0;
+            color: #a49a91;
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: #eee5dc;
+        }
+
+        .google-button {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            color: var(--dark);
+            border: 1px solid #ded5cc;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.2s;
+        }
+
+        .google-button:hover {
+            background: #faf7f1;
+        }
+
+        .google-icon {
+            font-size: 19px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            color: #4285F4;
+        }
+
+        .terms {
+            font-size: 11px;
+            line-height: 1.7;
+            color: var(--muted);
+            margin-top: 17px;
+            text-align: center;
+        }
+
+        .terms a,
+        .login-text a {
+            color: var(--burgundy);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .terms a:hover,
+        .login-text a:hover {
+            text-decoration: underline;
+        }
+
+        .login-text {
+            border-top: 1px solid #eee5dc;
+            padding-top: 20px;
+            margin-top: 22px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        footer {
+            padding: 22px 15px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            border-top: 1px solid #eee5dc;
+            background: white;
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 28px 22px;
+            }
+
+            h1 {
+                font-size: 29px;
+            }
+
+            .logo {
+                font-size: 25px;
+            }
+
+            header {
+                padding: 18px 6%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="announcement">
+        FIND YOUR NEXT CHAPTER WITH BOOKWORLD
+    </div>
+
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                Book<span>World.</span>
+            </a>
+
+            <a href="index.html" class="back-link">
+                ← Back to Home
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <section class="register-container">
+
+            <p class="eyebrow">Join Our Bookish World</p>
+
+            <h1>Create your account.</h1>
+
+            <p class="subtitle">
+                A world of stories, new discoveries, and favourite
+                authors awaits. Let's get you started.
+            </p>
+
+            <form action="#" method="post" id="registerForm">
+
+                <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <input
+                        type="text"
+                        id="fullname"
+                        name="full_name"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Choose a username"
+                        autocomplete="username"
+                        minlength="3"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirm_password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="primary-button">
+                    Create Account →
+                </button>
+
+            </form>
+
+            <div class="divider">OR SIGN UP WITH</div>
+
+            <button
+                type="button"
+                class="google-button"
+                id="googleButton"
+            >
+                <span class="google-icon">G</span>
+                Continue with Google
+            </button>
+
+            <p class="terms">
+                By creating an account, you agree to our
+                <a href="#" id="termsLink">Terms of Service</a>
+                and
+                <a href="#" id="privacyLink">Privacy Policy</a>.
+            </p>
+
+            <div class="login-text">
+                Already have an account?
+                <a href="login.html">Sign in</a>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        © 2026 BookWorld. A little world of stories, just for you.
+    </footer>
+
+<script>
+    const registerForm = document.getElementById("registerForm");
+
+    registerForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const fullName = document.getElementById("fullname").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        if (password !== confirmPassword) {
+            alert("Passwords do not match. Please try again.");
+            return;
+        }
+
+        if (username.length < 3) {
+            alert("Username must contain at least 3 characters.");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    full_name: fullName,
+                    email: email,
+                    password: password
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    typeof result.detail === "string"
+                        ? result.detail
+                        : JSON.stringify(result.detail || result)
+                );
+            }
+
+            alert("Account created successfully! You can now sign in.");
+
+            window.location.href = "login.html";
+
+        } catch (error) {
+            console.error("Registration error:", error);
+            alert("Registration failed: " + error.message);
+        }
+    });
+
+    document.getElementById("googleButton").addEventListener("click", function () {
+        alert("Google sign-in is not connected yet.");
+    });
+
+    document.getElementById("termsLink").addEventListener("click", function (event) {
+        event.preventDefault();
+        alert("Terms of Service page is coming soon.");
+    });
+
+    document.getElementById("privacyLink").addEventListener("click", function (event) {
+        event.preventDefault();
+        alert("Privacy Policy page is coming soon.");
+    });
+</script>
+
+</body>
+</html>
