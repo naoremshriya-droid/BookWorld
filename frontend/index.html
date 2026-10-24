@@ -200,10 +200,17 @@ footer{background:#29231f;color:#f6eee4;padding:45px 7% 20px}
 <input type="search" id="searchInput" placeholder="Search books, authors, genres..." aria-label="Search books">
 <button type="submit">Search</button>
 </form>
+
 <div class="header-actions">
-<a href="login.html" id="accountLink">♙ Account</a>
-<button type="button" onclick="showCart()">♡ Bag (<span id="cartCount">0</span>)</button>
+    <a href="login.html" id="accountLink">♙ Account</a>
+    <button type="button" id="logoutBtn" onclick="logout()" hidden>
+        Logout
+    </button>
+    <button type="button" onclick="showCart()">
+        ♡ Bag (<span id="cartCount">0</span>)
+    </button>
 </div>
+
 </header>
 
 <nav>
@@ -1136,9 +1143,21 @@ $("bookReviewForm").addEventListener("submit", async event => {
 
 /* ---------- ACCOUNT ---------- */
 
+
+function logout() {
+    localStorage.removeItem("bookworld_token");
+    localStorage.removeItem("bookworld_user");
+    showToast("Logged out successfully!");
+    setTimeout(() => location.reload(), 500);
+}
+
+
 function updateAccountLink() {
     const link = $("accountLink");
     const user = savedUser();
+    if ($("logoutBtn")) {
+        $("logoutBtn").hidden = !token();
+}
 
     if (!link) return;
 
