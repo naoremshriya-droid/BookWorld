@@ -555,16 +555,16 @@ function ensureEmptyMessage(id, grid) {
 }
 
 
+
 function bookCard(book, index) {
     const bookId = Number(book.book_id);
     const stock = Number(book.stock || 0);
 
-    // Use a saved image URL or ISBN when available.
-    const coverUrl = book.image_url
-        ? book.image_url
-        : book.isbn
+    // Use the cover image URL returned by the backend.
+    const coverUrl = book.cover_image || book.image_url ||
+        (book.isbn
             ? `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(book.isbn)}-M.jpg?default=false`
-            : "";
+            : "");
 
     const cover = coverUrl
         ? `<img
@@ -610,6 +610,7 @@ function bookCard(book, index) {
         </article>
     `;
 }
+
 
 
 function renderBooks(list = books) {

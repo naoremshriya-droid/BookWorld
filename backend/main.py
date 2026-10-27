@@ -138,6 +138,7 @@ def health():
 
 # -------------------- REGISTRATION --------------------
 
+
 @app.post("/api/register", status_code=201)
 def register(data: RegisterData):
     conn = None
@@ -163,15 +164,17 @@ def register(data: RegisterData):
 
             cursor.execute(
                 """
-                INSERT INTO BW_USERS (full_name, email, password_hash)
-                VALUES (:name, :email, :password_hash)
-                RETURNING user_id INTO :new_id
+                INSERT INTO BW_USERS
+                    (user_id, full_name, email, password_hash)
+                VALUES
+                    (BW_USERS_SEQ.NEXTVAL, :full_name, :email, :password_hash)
+                RETURNING user_id INTO :user_id
                 """,
                 {
-                    "name": data.full_name.strip(),
+                    "full_name": data.full_name.strip(),
                     "email": email,
                     "password_hash": hash_password(data.password),
-                    "new_id": new_id,
+                    "user_id": new_id,
                 },
             )
 
@@ -192,7 +195,10 @@ def register(data: RegisterData):
     except Exception as exc:
         if conn:
             conn.rollback()
-        raise HTTPException(status_code=500, detail=f"Registration failed: {exc}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Registration failed: {exc}",
+        )
 
     finally:
         if conn:
@@ -242,6 +248,7 @@ def login(data: LoginData):
 
 # -------------------- BOOK CATALOGUE --------------------
 
+
 @app.get("/api/books")
 def get_books(
     search: str = Query(default="", max_length=150),
@@ -262,7 +269,7 @@ def get_books(
                     b.category_id,
                     c.category_name,
                     a.author_name,
-                    b.ISBN
+                    b.cover_image
                 FROM BW_BOOKS b
                 LEFT JOIN BW_CATEGORIES c
                     ON b.category_id = c.category_id
@@ -291,22 +298,27 @@ def get_books(
                 {
                     "book_id": row[0],
                     "title": row[1],
-                    "price": float(row[2]),
+                    "price": float(row[2]) if row[2] is not None else 0,
                     "stock": row[3],
                     "category_id": row[4],
                     "category": row[5],
                     "author": row[6],
-                    "isbn": row[7],  # Added ISBN
+                    "cover_image": row[7],
+                    "isbn": None,
                 }
                 for row in cursor.fetchall()
             ]
 
     except Exception as exc:
-        raise HTTPException(status_code=503, detail=f"Could not load books: {exc}")
+        raise HTTPException(
+            status_code=503,
+            detail=f"Could not load books: {exc}"
+        )
 
     finally:
         if conn:
             conn.close()
+
 
 
 @app.get("/api/categories")
@@ -376,6 +388,7 @@ def get_book(book_id: int):
 
 # -------------------- CHECKOUT / ORDERS --------------------
 
+
 @app.post("/api/orders", status_code=201)
 def create_order(
     data: OrderData,
@@ -407,9 +420,12 @@ def create_order(
                 {"user_id": user_id},
             )
             if not cursor.fetchone():
-                raise HTTPException(status_code=401, detail="User account not found.")
+                raise HTTPException(
+                    status_code=401,
+                    detail="User account not found.",
+                )
 
-            # Combine duplicate book IDs so stock is checked correctly.
+            # Combine duplicate book IDs.
             quantities = {}
             for item in data.items:
                 quantities[item.book_id] = (
@@ -428,16 +444,22 @@ def create_order(
                         detail=f"Book ID {book_id} was not found.",
                     )
 
-                title, price, stock = book[1], float(book[2]), int(book[3])
+                title, price, stock = (
+                    book[1],
+                    float(book[2]),
+                    int(book[3]),
+                )
 
                 if quantity > stock:
                     raise HTTPException(
                         status_code=409,
-                        detail=f"Not enough stock for '{title}'. Available: {stock}.",
+                        detail=(
+                            f"Not enough stock for '{title}'. "
+                            f"Available: {stock}."
+                        ),
                     )
 
-                line_total = price * quantity
-                total += line_total
+                total += price * quantity
 
                 order_lines.append({
                     "book_id": book_id,
@@ -446,38 +468,50 @@ def create_order(
                     "price": price,
                 })
 
-            # Assumes BW_ORDERS has ORDER_ID, USER_ID, ORDER_DATE,
-            # ORDER_STATUS and TOTAL_AMOUNT.
+            # Generate ORDER_ID using the Oracle sequence.
             new_order_id = cursor.var(int)
 
             cursor.execute("""
                 INSERT INTO BW_ORDERS
-                    (user_id, order_date, order_status, total_amount)
+                    (
+                        order_id,
+                        user_id,
+                        order_date,
+                        order_status,
+                        total_amount
+                    )
                 VALUES
-                    (:user_id, :order_date, :status, :total)
+                    (
+                        BW_ORDERS_SEQ.NEXTVAL,
+                        :user_id,
+                        :order_date,
+                        :status,
+                        :total
+                    )
                 RETURNING order_id INTO :new_order_id
             """, {
                 "user_id": user_id,
                 "order_date": datetime.now(timezone.utc).replace(tzinfo=None),
-                "status": "PLACED",
+                "status": "PENDING",
                 "total": total,
                 "new_order_id": new_order_id,
             })
 
             order_id = int(new_order_id.getvalue()[0])
 
+            # Insert order items and update stock.
             for line in order_lines:
                 cursor.execute("""
-                    INSERT INTO BW_ORDER_ITEMS
-                        (order_id, book_id, quantity, unit_price)
-                    VALUES
-                        (:order_id, :book_id, :quantity, :price)
-                """, {
-                    "order_id": order_id,
-                    "book_id": line["book_id"],
-                    "quantity": line["quantity"],
-                    "price": line["price"],
-                })
+    INSERT INTO BW_ORDER_ITEMS
+        (order_item_id, order_id, book_id, quantity, unit_price)
+    VALUES
+        (BW_ORDER_ITEMS_SEQ.NEXTVAL, :order_id, :book_id, :quantity, :price)
+""", {
+    "order_id": order_id,
+    "book_id": line["book_id"],
+    "quantity": line["quantity"],
+    "price": line["price"],
+})
 
                 cursor.execute("""
                     UPDATE BW_BOOKS
@@ -488,20 +522,18 @@ def create_order(
                     "book_id": line["book_id"],
                 })
 
-            # This records the chosen method; no real payment is processed.
-            # Assumes BW_PAYMENTS has PAYMENT_METHOD, PAYMENT_STATUS,
-            # AMOUNT and ORDER_ID.
+            # Record payment method; no real payment is processed.
             cursor.execute("""
-                INSERT INTO BW_PAYMENTS
-                    (order_id, payment_method, payment_status, amount)
-                VALUES
-                    (:order_id, :method, :status, :amount)
-            """, {
-                "order_id": order_id,
-                "method": payment_method,
-                "status": "PENDING" if payment_method != "COD" else "PAY_ON_DELIVERY",
-                "amount": total,
-            })
+    INSERT INTO BW_PAYMENTS
+        (payment_id, order_id, payment_method, payment_status, amount)
+    VALUES
+        (BW_PAYMENTS_SEQ.NEXTVAL, :order_id, :method, :status, :amount)
+""", {
+    "order_id": order_id,
+    "method": payment_method,
+    "status": "PENDING" if payment_method != "COD" else "PAY_ON_DELIVERY",
+    "amount": total,
+})
 
         conn.commit()
 
@@ -511,7 +543,9 @@ def create_order(
             "total": round(total, 2),
             "payment_method": payment_method,
             "payment_status": (
-                "PENDING" if payment_method != "COD" else "PAY_ON_DELIVERY"
+                "PENDING"
+                if payment_method != "COD"
+                else "PAY_ON_DELIVERY"
             ),
             "items": order_lines,
         }
@@ -524,11 +558,15 @@ def create_order(
     except Exception as exc:
         if conn:
             conn.rollback()
-        raise HTTPException(status_code=500, detail=f"Could not place order: {exc}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Could not place order: {exc}",
+        )
 
     finally:
         if conn:
             conn.close()
+
 
 
 @app.get("/api/orders")
@@ -575,11 +613,11 @@ def get_reviews(book_id: int):
                         u.full_name,
                         r.rating,
                         r.review_text,
-                        r.review_date
+                        r.CREATED_AT
                     FROM BW_REVIEWS r
                     JOIN BW_USERS u ON u.user_id = r.user_id
                     WHERE r.book_id = :book_id
-                    ORDER BY r.review_date DESC
+                    ORDER BY r.CREATED_AT DESC
                 """, {"book_id": book_id})
 
                 rows = cursor.fetchall()
@@ -620,17 +658,18 @@ def create_review(
                 raise HTTPException(status_code=404, detail="Book not found.")
 
             cursor.execute("""
-                INSERT INTO BW_REVIEWS
-                    (user_id, book_id, rating, review_text, review_date)
-                VALUES
-                    (:user_id, :book_id, :rating, :review_text, :review_date)
-            """, {
-                "user_id": user_id,
-                "book_id": data.book_id,
-                "rating": data.rating,
-                "review_text": data.review_text.strip(),
-                "review_date": datetime.now(timezone.utc).replace(tzinfo=None),
-            })
+    UPDATE BW_REVIEWS
+    SET RATING = :rating,
+        REVIEW_TEXT = :review_text,
+        CREATED_AT = SYSTIMESTAMP
+    WHERE USER_ID = :user_id
+      AND BOOK_ID = :book_id
+""", {
+    "rating": data.rating,
+    "review_text": data.review_text,
+    "user_id": user_id,
+    "book_id": data.book_id,
+})
 
         conn.commit()
         return {"message": "Review submitted successfully."}
