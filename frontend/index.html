@@ -343,7 +343,10 @@ footer{background:#29231f;color:#f6eee4;padding:45px 7% 20px}
 </div>
 <hr>
 <div class="book-reviews-heading">
-<div><h3>Reader Reviews</h3><p>Reviews submitted by BookWorld readers on this browser.</p></div>
+<div>
+    <h3>Reader Reviews</h3>
+    <p>Reviews shared by BookWorld readers.</p>
+</div>
 <button class="write-review-btn" onclick="openReviewForm()">✎ Write a Review</button>
 </div>
 <div id="bookReviewsList"></div>
@@ -364,7 +367,9 @@ footer{background:#29231f;color:#f6eee4;padding:45px 7% 20px}
 <button type="submit" class="write-review-btn">Post Review</button>
 </div>
 </form>
-<p class="feature-note">Reviews are saved locally in this browser for now. They will not be shared across devices until a backend such as Firebase is connected.</p>
+<p class="feature-note">
+    Reviews are stored in the BookWorld Oracle database.
+</p>
 </section>
 </div>
 
@@ -374,7 +379,7 @@ const API_BASE = "http://127.0.0.1:8000";
 
 let books = [];
 let categories = [];
-let cart = [];
+let cart = JSON.parse(localStorage.getItem("bookworld_cart") || "[]");
 let activeCategory = "";
 let currentBook = null;
 
@@ -394,6 +399,10 @@ const money = value =>
     "₹" + Number(value || 0).toLocaleString("en-IN", {
         maximumFractionDigits: 2
     });
+
+    function saveCart() {
+    localStorage.setItem("bookworld_cart", JSON.stringify(cart));
+}
 
 function safe(value) {
     return String(value ?? "").replace(/[&<>"']/g, c => ({
@@ -763,8 +772,10 @@ $("searchInput").addEventListener("input", () => {
 /* ---------- CART ---------- */
 
 function updateCart() {
+    saveCart();
+
     $("cartCount").textContent =
-        cart.reduce((sum, item) => sum + item.quantity, 0);
+        cart.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
 }
 
 function addToCart(bookId) {
@@ -1055,33 +1066,60 @@ async function openBookDetails(bookId) {
 
     openPanel("bookDetailsOverlay");
 
-    try {
-        const reviews = await api(`/api/books/${Number(book.book_id)}/reviews`);
+    
+try {
+    const reviews = await api(
+        `/api/books/${Number(book.book_id)}/reviews`
+    );
 
-        if (!Array.isArray(reviews) || reviews.length === 0) {
-            $("bookReviewsList").innerHTML =
-                '<p class="no-book-reviews">No reviews yet. Be the first to share your thoughts.</p>';
-            return;
-        }
+    const reviewsList = $("bookReviewsList");
 
-        $("bookReviewsList").innerHTML = reviews.map(review => `
-            <article class="book-review-item">
-                <div class="book-review-meta">
-                    <span class="book-review-name">${safe(review.name || "Reader")}</span>
-                    <span class="book-review-stars">
-                        ${"★".repeat(Number(review.rating) || 0)}
-                        ${"☆".repeat(5 - (Number(review.rating) || 0))}
-                    </span>
-                </div>
-                <p class="book-review-text">${safe(review.review_text || "")}</p>
-            </article>
-        `).join("");
-    } catch (error) {
-        $("bookReviewsList").textContent =
-            "Could not load reviews: " + error.message;
+    if (!Array.isArray(reviews) || reviews.length === 0) {
+        reviewsList.innerHTML =
+            '<p class="no-book-reviews">No reviews yet. Be the first to share your thoughts.</p>';
+    } else {
+        reviewsList.innerHTML = reviews.map(review => {
+            const rating = Math.max(
+                0,
+                Math.min(5, Number(review.rating) || 0)
+            );
+
+            return `
+                <article class="book-review-item">
+                    <div class="book-review-meta">
+                        <span class="book-review-name">
+                            ${safe(review.name || "Reader")}
+                        </span>
+
+                        <span class="book-review-stars">
+                            ${"★".repeat(rating)}${"☆".repeat(5 - rating)}
+                        </span>
+                    </div>
+
+                    <p class="book-review-text">
+                        ${safe(review.review_text || "")}
+                    </p>
+
+                    <small>
+                        ${safe(
+                            review.review_date
+                                ? new Date(review.review_date).toLocaleDateString()
+                                : ""
+                        )}
+                    </small>
+                </article>
+            `;
+        }).join("");
     }
+
+} catch (error) {
+    $("bookReviewsList").textContent =
+        "Could not load reviews. Please refresh and try again.";
+    console.error("Failed to load reviews:", error);
 }
 
+} // Closes openBookDetails()
+        
 function openReviewForm() {
     if (!currentBook) return;
 

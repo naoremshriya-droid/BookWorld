@@ -635,9 +635,14 @@ def get_reviews(book_id: int):
         ]
 
     except Exception as exc:
-        raise HTTPException(status_code=503, detail=f"Could not load reviews: {exc}")
+        raise HTTPException(
+            status_code=503,
+            detail=f"Could not load reviews: {exc}"
+        )
 
 
+
+        
 @app.post("/api/reviews", status_code=201)
 def create_review(
     data: ReviewData,
@@ -650,28 +655,47 @@ def create_review(
         conn = get_connection()
 
         with conn.cursor() as cursor:
+            # Check that the book exists.
             cursor.execute(
                 "SELECT book_id FROM BW_BOOKS WHERE book_id = :book_id",
                 {"book_id": data.book_id},
             )
+
             if not cursor.fetchone():
                 raise HTTPException(status_code=404, detail="Book not found.")
 
+            # Update an existing review, if one exists.
             cursor.execute("""
-    UPDATE BW_REVIEWS
-    SET RATING = :rating,
-        REVIEW_TEXT = :review_text,
-        CREATED_AT = SYSTIMESTAMP
-    WHERE USER_ID = :user_id
-      AND BOOK_ID = :book_id
-""", {
-    "rating": data.rating,
-    "review_text": data.review_text,
-    "user_id": user_id,
-    "book_id": data.book_id,
-})
+                UPDATE BW_REVIEWS
+                SET rating = :rating,
+                    review_text = :review_text,
+                    created_at = SYSTIMESTAMP
+                WHERE user_id = :user_id
+                  AND book_id = :book_id
+            """, {
+                "rating": data.rating,
+                "review_text": data.review_text.strip(),
+                "user_id": user_id,
+                "book_id": data.book_id,
+            })
+
+            # If no review existed, insert a new one.
+            if cursor.rowcount == 0:
+                cursor.execute("""
+                    INSERT INTO BW_REVIEWS
+                        (review_id, user_id, book_id, rating, review_text, created_at)
+                    VALUES
+                        (BW_REVIEWS_SEQ.NEXTVAL, :user_id, :book_id,
+                         :rating, :review_text, SYSTIMESTAMP)
+                """, {
+                    "user_id": user_id,
+                    "book_id": data.book_id,
+                    "rating": data.rating,
+                    "review_text": data.review_text.strip(),
+                })
 
         conn.commit()
+
         return {"message": "Review submitted successfully."}
 
     except HTTPException:
@@ -682,8 +706,12 @@ def create_review(
     except Exception as exc:
         if conn:
             conn.rollback()
-        raise HTTPException(status_code=500, detail=f"Could not submit review: {exc}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Could not submit review: {exc}"
+        )
 
     finally:
         if conn:
             conn.close()
+
